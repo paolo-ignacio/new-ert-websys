@@ -88,11 +88,12 @@
             .login-btn {
                 width: 100%;
                 padding: 12px;
+                
                 background-color: #FFDA27;
                 border: none;
                 border-radius: 8px;
                 font-weight: bold;
-                color: white;
+                color: #0A28D8;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
             }

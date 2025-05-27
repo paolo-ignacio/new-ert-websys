@@ -6,15 +6,24 @@ use Mdpf\Mdpf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Employee;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+     public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        session()->flush();
+        return redirect('/login');
+    }
     public function index(Request $request)
     {
+        if(session('loggedUser')){
         $query = Employee::query();
 
         if ($request->filled('classification')) {
@@ -32,6 +41,10 @@ class EmployeeController extends Controller
         $colleges = Employee::select('college')->distinct()->pluck('college');
 
         return view('employees.index', compact('employees', 'classifications', 'colleges'));
+        }
+        else {
+            return redirect()->route('login');
+        }
     }
 
     /**

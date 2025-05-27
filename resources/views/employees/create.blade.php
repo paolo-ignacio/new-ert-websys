@@ -1,33 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Employee</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+@section('title', 'Add Employee')
+
+@push('styles')
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body,
-        html {
-            height: 100%;
-            width: 100%;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 20px;
-        }
+        /* Your page-specific styles here */
 
         .container {
             width: 100%;
             max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         .logo-container {
@@ -54,29 +37,15 @@
             text-align: center;
         }
 
-        .form-box {
-            background-color: #ffffff;
-            color: #FFDA27;
-            padding: 20px;
-            border-radius: 12px;
-        }
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #FFDA27;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 218, 39, 0.5); /* Optional: a soft glow effect */
-        }
-
-        .form-box h2 {
+        form h2 {
             font-size: 24px;
             color: #0A28D8;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
         .form-group {
             margin-bottom: 20px;
-            color:#FFDA27;
         }
 
         .form-group label {
@@ -94,6 +63,13 @@
             border-radius: 8px;
             background: #fff;
             color: #333;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #FFDA27;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 218, 39, 0.5);
         }
 
         .form-group input::placeholder {
@@ -114,101 +90,102 @@
 
         .login-btn:hover {
             background-color: #FFDA27;
+            color: #0A28D8;
         }
 
         #preview {
-            display: none;
             max-width: 100%;
             margin-top: 10px;
             border-radius: 8px;
+            display: none;
         }
     </style>
-</head>
+@endpush
 
-<body>
-    <div class="container">
-        <div class="logo-container">
-            <img src="/images/psulogo.png" alt="Logo">
-            <h2>Pangasinan State University - Urdaneta City Campus</h2>
-            <p>Region's Premier University of Choice</p>
+@section('content')
+    <div class="main-content">
+        <div class="container">
+            
+            <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <h2>Add Employee Data</h2>
+
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter full name" />
+                    @error('name')
+                        <span style="color:red">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="id_number">ID:</label>
+                    <input type="text" name="id_number" value="{{ old('id_number') }}" placeholder="Enter ID number" />
+                    @error('id_number')
+                        <span style="color:red">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="college">Choose College:</label>
+                    <select name="college">
+                        <option value="">Select</option>
+                        <option value="College of Computing" {{ old('college') == 'College of Computing' ? 'selected' : '' }}>
+                            College of Computing</option>
+                        <option value="College of Teacher Education" {{ old('college') == 'College of Teacher Education' ? 'selected' : '' }}>College of Teacher Education</option>
+                        <option value="College of Engineering" {{ old('college') == 'College of Engineering' ? 'selected' : '' }}>College of Engineering</option>
+                        <option value="College of Architecture" {{ old('college') == 'College of Architecture' ? 'selected' : '' }}>College of Architecture</option>
+                    </select>
+                    @error('college')
+                        <span style="color:red">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="classification">Choose Class Role:</label>
+                    <select name="classification">
+                        <option value="">Select</option>
+                        <option value="Instructional" {{ old('classification') == 'Instructional' ? 'selected' : '' }}>
+                            Instructional</option>
+                        <option value="Non-instructional" {{ old('classification') == 'Non-instructional' ? 'selected' : '' }}>Non-instructional</option>
+                    </select>
+                    @error('classification')
+                        <span style="color:red">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="picture">Select image to upload:</label>
+                    <input type="file" name="picture" id="pictureInput" onchange="previewImage(event)" />
+                    <img id="preview" alt="Image Preview" />
+                    @error('picture')
+                        <span style="color:red">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <button type="submit" class="login-btn">Save</button>
+            </form>
         </div>
-
-        <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="form-box">
-            @csrf
-            <h2>Add Employee Data</h2>
-
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" name="name" placeholder="Enter name">
-                @error('name') 
-                    <span style="color:red">{{ $message }}</span> 
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="id_number">ID:</label>
-                <input type="text" name="id_number" placeholder="Enter ID" >
-                @error('id_number') 
-                    <span style="color:red">{{ $message }}</span> 
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="college">Choose College:</label>
-                <select name="college" required>
-                    <option value="">Select</option>
-                    <option value="College of Computing">College of Computing</option>
-                    <option value="College of Teacher Education">College of Teacher Education</option>
-                    <option value="College of Engineering">College of Engineering</option>
-                    <option value="College of Architecture">College of Architecture</option>
-                </select>
-                @error('college') 
-                    <span style="color:red">{{ $message }}</span> 
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="classification">Choose Class Role:</label>
-                <select name="classification" required>
-                    <option value="">Select</option>
-                    <option value="Instructional">Instructional</option>
-                    <option value="Non-instructional">Non-instructional</option>
-                </select>
-                @error('classification') 
-                    <span style="color:red">{{ $message }}</span> 
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="picture">Upload Image:</label>
-                <input type="file" name="picture" id="pictureInput" onchange="previewImage(event)">
-                <img id="preview" alt="Image Preview">
-                @error('picture') 
-                    <span style="color:red">{{ $message }}</span> 
-                @enderror
-            </div>
-
-            <button type="submit" class="login-btn">Save</button>
-        </form>
     </div>
+@endsection
 
+@push('scripts')
     <script>
+        // Function to preview image when selected
         function previewImage(event) {
-            const input = event.target;
             const preview = document.getElementById('preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
 
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
+            reader.onload = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            };
 
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-
-                reader.readAsDataURL(input.files[0]);
+            if (file) {
+                reader.readAsDataURL(file);
             }
         }
     </script>
-</body>
-
-</html>
+@endpush

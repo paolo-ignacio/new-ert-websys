@@ -73,6 +73,7 @@ class AttencdanceController extends Controller
     }
 public function viewMonthlyReport(Request $request)
 {
+    if(session('loggedUser')){
     $role = $request->input('role');
     $month = $request->input('month', now('Asia/Manila')->month); // Use current month by default
 
@@ -104,6 +105,7 @@ public function viewMonthlyReport(Request $request)
             'undertime' => $this->formatMinutesToHoursMinutes($totalUndertimeMinutes),
             'absences' => $absenceRanges
         ];
+       
     }
 
     // ✅ Paginate data
@@ -125,6 +127,9 @@ public function viewMonthlyReport(Request $request)
         'selectedMonth' => $month,
         'selectedMonthName' => $monthName
     ]);
+     } else {
+            return redirect()->route('login');
+        }
 }
  private function calculateUndertime($attendance)
 {

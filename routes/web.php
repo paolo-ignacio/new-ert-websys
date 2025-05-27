@@ -18,7 +18,7 @@ Route::view('/scan', 'scan.scanView');
 Route::post('/save-attendance', [AttencdanceController::class, 'store']);
 
 Route::get('/dashboard', [AttencdanceController::class, 'dashboard']);
-
+Route::post('/logout', [EmployeeController::class, 'logout'])->name('logout');
 Route::get('/monthly-report', [AttencdanceController::class, 'viewMonthlyReport']);
 Route::get('/attendance/report', [AttencdanceController::class, 'viewMonthlyReport'])->name('attendance.report');
 Route::get('/download-grouped-excel', [AttencdanceController::class, 'downloadGroupedSheet'])->name('attendance.excel');
